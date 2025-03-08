@@ -27,6 +27,7 @@ private fun HeightMap.getVector3f(
 fun launchApp(ctx: KoolContext) {
     // add a hello-world demo scene
     val heightMap = MidpointDisplacement(1.5, 16).generate()
+//    val heightMap = FaultFormation(32, 16).generate()
     val stripList = mutableListOf<List<Vec3f>>()
     for (y in 0..<heightMap.size - 1) {
         val vectors = mutableListOf<Vec3f>()
@@ -45,7 +46,6 @@ fun launchApp(ctx: KoolContext) {
             defaultOrbitCamera()
             addColorMesh {
                 generate {
-
                     grid {
                         sizeY = 32f
                         sizeX = 32f
@@ -61,7 +61,7 @@ fun launchApp(ctx: KoolContext) {
                     }
             }
 
-            stripList.forEachIndexed {idx,list ->
+            stripList.forEachIndexed { idx, list ->
                 addTriangulatedMesh(makeChildName("mesh-$idx"), list)
             }
 

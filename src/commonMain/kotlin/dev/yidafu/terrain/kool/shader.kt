@@ -2,6 +2,7 @@ package dev.yidafu.terrain.kool
 
 import de.fabmax.kool.modules.ksl.KslShader
 import de.fabmax.kool.modules.ksl.blocks.mvpMatrix
+import de.fabmax.kool.modules.ksl.lang.KslInterStageInterpolation
 import de.fabmax.kool.modules.ksl.lang.times
 import de.fabmax.kool.pipeline.Attribute
 import de.fabmax.kool.pipeline.vertexAttribFloat3
@@ -9,7 +10,8 @@ import de.fabmax.kool.pipeline.vertexAttribFloat4
 
 val customShader =
     KslShader("Custom shader") {
-        val interStageColor = interStageFloat4()
+        val interStageColor = interStageFloat4(interpolation = KslInterStageInterpolation.Flat)
+
         vertexStage {
             main {
                 val mvp = mvpMatrix()
@@ -19,7 +21,6 @@ val customShader =
             }
         }
         fragmentStage {
-
             main {
                 colorOutput(interStageColor.output)
             }
