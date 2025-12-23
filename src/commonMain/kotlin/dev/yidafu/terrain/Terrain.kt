@@ -2,22 +2,28 @@ package dev.yidafu.terrain
 
 import dev.yidafu.terrain.core.HeightMap
 
+/**
+ * Abstract base class for terrain generation algorithms.
+ *
+ * All terrain generators extend this class and implement the [generate] method
+ * to produce a [HeightMap].
+ *
+ * @property size The width/height of the square height map to generate
+ */
 abstract class Terrain(
     open val size: Int,
 ) {
+    /**
+     * Generates a terrain height map.
+     *
+     * @return A new HeightMap with the generated terrain data
+     */
     abstract fun generate(): HeightMap
 
-//    abstract fun load(filepath: String)
-//
-//    abstract fun save(filepath: String): Boolean
-
+    /**
+     * Unloads the terrain resources.
+     *
+     * @return true if unloading was successful
+     */
     fun unload(): Boolean = true
 }
-
-// fun SHeightData.grid(callback: (x: Int, y: Int) -> Unit) {
-//    for (x in 0..<size) {
-//        for (y in 0..<size) {
-//            callback(x, y)
-//        }
-//    }
-// }

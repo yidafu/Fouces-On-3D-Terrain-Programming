@@ -1,28 +1,34 @@
 package dev.yidafu.terrain.ext
 
-import dev.yidafu.terrain.assert
 import dev.yidafu.terrain.core.Vertex
 import kotlin.jvm.JvmName
 import kotlin.math.floor
-import kotlin.math.sqrt
 
+/**
+ * Converts a DoubleArray to UByteArray by normalizing values to 0-100 range.
+ *
+ * The conversion maps the input range [min, max] to [0, 100].
+ *
+ * @return UByteArray with normalized values in range 0-100
+ */
 @OptIn(ExperimentalUnsignedTypes::class)
 @JvmName("DoubleArray_toUByteArray")
 inline fun DoubleArray.toUByteArray(): UByteArray {
     val maxValue = this.max()
     val minValue = this.min()
     val range = maxValue - minValue
-    val uBytes =
-        map {
-            floor(((it - minValue) / range * 100).toDouble()).toInt().toUByte()
-        }.toUByteArray()
-    ubyteArrayOf(*uBytes)
-    return uBytes
+    return map {
+        floor(((it - minValue) / range * 100)).toInt().toUByte()
+    }.toUByteArray()
 }
 
-@JvmName("DoubleArray_displayMatrix")
-fun DoubleArray.displayMatrix() {
-    val size = sqrt(this.size.toDouble()).toInt()
+/**
+ * Prints the array as a 2D matrix to stdout.
+ * Assumes the array represents a square matrix.
+ */
+@JvmName("DoubleArray_printMatrix")
+fun DoubleArray.printMatrix() {
+    val size = width
     for (x in 0..<size) {
         for (z in 0..<size) {
             print(this[z * size + x].toString().padStart(8, ' '))
@@ -32,13 +38,7 @@ fun DoubleArray.displayMatrix() {
 }
 
 val DoubleArray.width: Int
-    get() {
-        val width = sqrt(size.toDouble())
-        assert(width >= floor(width)) {
-            "DoubleArray must be a square"
-        }
-        return width.toInt()
-    }
+    get() = calculateSquareWidth(size)
 
 @JvmName("DoubleArray_setVertex")
 inline fun DoubleArray.setVertex(

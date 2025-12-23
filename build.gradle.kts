@@ -1,25 +1,33 @@
+import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDistributionDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     kotlin("multiplatform") version "2.1.0"
+    `version-catalog`
 }
 
 group = "dev.yidafu.terrain"
 version = "1.0-SNAPSHOT"
 
+val libs: LibrariesForLibs = extensions.getByType()
+
 repositories {
+    maven { setUrl("https://mirrors.cloud.tencent.com/nexus/repository/maven-public") }
     mavenCentral()
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven { setUrl("https://jogamp.org/deployment/maven") }
-    maven { setUrl("https://mirrors.cloud.tencent.com/nexus/repository/maven-public") }
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 
-    jvm {}
+    jvm {
+        compilerOptions {
+            freeCompilerArgs.add("-Xcontext-receivers")
+        }
+    }
     js {
         binaries.executable()
         browser {
@@ -33,13 +41,11 @@ kotlin {
         }
         compilerOptions {
             target.set("es2015")
+            freeCompilerArgs.add("-Xcontext-receivers")
         }
     }
 
     sourceSets {
-        val koolVersion = "0.17.0-SNAPSHOT"
-        val lwjglVersion = "3.3.6"
-        val physxJniVersion = "2.4.0"
         val targetPlatforms = listOf("natives-windows", "natives-linux", "natives-macos", "natives-macos-arm64")
 
         commonTest.dependencies {
@@ -47,11 +53,9 @@ kotlin {
         }
 
         commonMain.dependencies {
-            implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.20")
-            implementation("de.fabmax.kool:kool-core:$koolVersion")
-            implementation("de.fabmax.kool:kool-physics:$koolVersion")
-
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+            implementation(libs.kotlin.stdlib)
+            implementation(libs.bundles.kool)
+            implementation(libs.kotlinx.coroutines.core)
         }
         val jsMain by getting {
 
@@ -61,22 +65,20 @@ kotlin {
 
         jvmMain {
             dependencies {
-                implementation("org.jogamp.gluegen:gluegen-rt-main:2.5.0")
-                implementation("org.jogamp.jogl:jogl-all-main:2.5.0")
-                implementation("org.joml:joml:1.10.5")
+                implementation(libs.bundles.jogamp)
+                implementation(libs.joml)
 
                 targetPlatforms.forEach { platform ->
-
-                    runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion:$platform")
+                    runtimeOnly("org.lwjgl:lwjgl:${libs.versions.lwjgl.get()}:$platform")
                     val hasVulkanRuntime = "macos" in platform
                     listOf("glfw", "vulkan", "jemalloc", "nfd", "stb", "vma", "shaderc")
                         .filter { it != "vulkan" || hasVulkanRuntime }
                         .forEach { lib ->
-                            runtimeOnly("org.lwjgl:lwjgl-$lib:$lwjglVersion:$platform")
+                            runtimeOnly("org.lwjgl:lwjgl-$lib:${libs.versions.lwjgl.get()}:$platform")
                         }
 
                     // physx-jni runtime libs
-                    runtimeOnly("de.fabmax:physx-jni:$physxJniVersion:$platform")
+                    runtimeOnly("de.fabmax:physx-jni:${libs.versions.physx.jni.get()}:$platform")
                 }
             }
         }

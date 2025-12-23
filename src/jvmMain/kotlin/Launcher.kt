@@ -11,7 +11,6 @@ import dev.yidafu.terrain.launchApp
 fun main() {
     KoolApplication(
         config = KoolConfigJvm(
-            renderBackend = KoolConfigJvm.Backend.VULKAN,
             windowTitle = "Kool Demo",
             windowSize = Vec2i(1600, 900)
         )

@@ -1,0 +1,41 @@
+[versions]
+kotlin = "2.1.0"
+kotlin-stdlib = "2.0.20"
+kotlinx-coroutines = "1.8.0"
+kool = "0.19.0"
+lwjgl = "3.3.6"
+physx-jni = "2.4.0"
+jogamp-gluegen = "2.5.0"
+jogamp-jogl = "2.5.0"
+joml = "1.10.5"
+
+[libraries]
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin-stdlib" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+
+kool-core = { module = "de.fabmax.kool:kool-core", version.ref = "kool" }
+kool-physics = { module = "de.fabmax.kool:kool-physics", version.ref = "kool" }
+
+jogamp-gluegen-rt = { module = "org.jogamp.gluegen:gluegen-rt-main", version.ref = "jogamp-gluegen" }
+jogamp-jogl-all = { module = "org.jogamp.jogl:jogl-all-main", version.ref = "jogamp-jogl" }
+joml = { module = "org.joml:joml", version.ref = "joml" }
+
+lwjgl-core = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl" }
+lwjgl-glfw = { module = "org.lwjgl:lwjgl-glfw", version.ref = "lwjgl" }
+lwjgl-vulkan = { module = "org.lwjgl:lwjgl-vulkan", version.ref = "lwjgl" }
+lwjgl-jemalloc = { module = "org.lwjgl:lwjgl-jemalloc", version.ref = "lwjgl" }
+lwjgl-nfd = { module = "org.lwjgl:lwjgl-nfd", version.ref = "lwjgl" }
+lwjgl-stb = { module = "org.lwjgl:lwjgl-stb", version.ref = "lwjgl" }
+lwjgl-vma = { module = "org.lwjgl:lwjgl-vma", version.ref = "lwjgl" }
+lwjgl-shaderc = { module = "org.lwjgl:lwjgl-shaderc", version.ref = "lwjgl" }
+
+physx-jni = { module = "de.fabmax:physx-jni", version.ref = "physx-jni" }
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+
+[bundles]
+kool = ["kool-core", "kool-physics"]
+jogamp = ["jogamp-gluegen-rt", "jogamp-jogl-all"]
+lwjgl-vulkan-libs = ["lwjgl-core", "lwjgl-glfw", "lwjgl-vulkan", "lwjgl-jemalloc", "lwjgl-nfd", "lwjgl-stb", "lwjgl-vma", "lwjgl-shaderc"]
+lwjgl-opengl-libs = ["lwjgl-core", "lwjgl-glfw", "lwjgl-jemalloc", "lwjgl-nfd", "lwjgl-stb", "lwjgl-vma", "lwjgl-shaderc"]

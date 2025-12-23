@@ -10,8 +10,18 @@ import dev.yidafu.terrain.ext.toUByteArray
 import kotlin.math.pow
 
 /**
- * @url https://stevelosh.com/blog/2016/02/midpoint-displacement/
- * @url https://craftofcoding.wordpress.com/2021/07/09/midpoint-displacement-in-2d/
+ * Generates terrain using the midpoint displacement (diamond-square) algorithm.
+ *
+ * This algorithm creates realistic-looking terrain by recursively subdividing
+ * a grid and displacing the midpoint values by random amounts. The displacement
+ * decreases with each iteration, controlled by the roughness parameter.
+ *
+ * References:
+ * - https://stevelosh.com/blog/2016/02/midpoint-displacement/
+ * - https://craftofcoding.wordpress.com/2021/07/09/midpoint-displacement-in-2d/
+ *
+ * @property roughness Controls terrain roughness (higher = more smooth, lower = more jagged)
+ * @property size The grid size (must be 2^n for proper subdivision)
  */
 class MidpointDisplacement(
     roughness: Double,
@@ -20,9 +30,6 @@ class MidpointDisplacement(
     private val roughnessValue = 2.0.pow(-roughness)
 
     override fun generate(): HeightMap {
-//        assert(size % 4 == 0) {
-//            "heightmap width($size) must be multiple of 4"
-//        }
         val matrix = DoubleArray((size + 1) * (size + 1))
         val topLeft = Vertex(0, 0)
         val topRight = Vertex(size, 0)
@@ -45,6 +52,16 @@ class MidpointDisplacement(
         return HeightMapImpl(size + 1, matrix.toUByteArray())
     }
 
+    /**
+     * Recursively calculates midpoints for the diamond-square algorithm.
+     *
+     * @param matrix The height map matrix being modified
+     * @param height The current displacement height (decreases with each recursion level)
+     * @param topLeft Top-left corner of the square region
+     * @param topRight Top-right corner of the square region
+     * @param bottomRight Bottom-right corner of the square region
+     * @param bottomLeft Bottom-left corner of the square region
+     */
     private fun calculateMidpoint(
         matrix: DoubleArray,
         height: Double,

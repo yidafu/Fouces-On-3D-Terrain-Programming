@@ -1,9 +1,16 @@
 package dev.yidafu.terrain.flatiron
 
+import dev.yidafu.terrain.TerrainConstants
 import kotlin.math.sqrt
 
 /**
- * apply FIR filter to material
+ * Applies FIR (Finite Impulse Response) filtering to smooth terrain.
+ *
+ * This filter iterates over the terrain in four directions (top-to-bottom,
+ * bottom-to-top, left-to-right, right-to-left) and applies exponential
+ * smoothing to reduce sharp features.
+ *
+ * @property filter The smoothing coefficient (0.0 = no smoothing, 1.0 = maximum smoothing)
  */
 class SimpleFlatiron(
     val filter: Float = 0.3f,
@@ -11,33 +18,28 @@ class SimpleFlatiron(
     override fun iron(material: FloatArray) {
         val count = sqrt(material.size.toDouble()).toInt()
 
-        repeat(16) {
+        repeat(TerrainConstants.DEFAULT_FLATIRON_ITERATIONS) {
             for (i in 0..<count) {
-                // top to bottom
+                // Vertical passes (top to bottom, bottom to top)
                 firFilter(material, i, count, count, filter)
-                // bottom to top
                 firFilter(material, count * count - 1, -count, count, filter)
 
-                // left to right
+                // Horizontal passes (left to right, right to left)
                 firFilter(material, i * count, 1, count, filter)
-                // right to left
                 firFilter(material, i * count + count - 1, -1, count, filter)
             }
-
-//            var value = material[0]
-//            for (j in 0..<count / 2) {
-//                val start = j
-//                val end = count - j
-//                for (m in start..<end) {
-//                    val index = j * count + m
-//                    material[index] = filter * value + (1 - filter) * material[index]
-//                    value = material[index]
-//                }
-//                for (n in end ..< (count - j * 2))
-//            }
         }
     }
 
+    /**
+     * Applies a 1D FIR filter along a line in the array.
+     *
+     * @param band The array to filter
+     * @param start Starting index
+     * @param stride Step between elements (can be negative for reverse direction)
+     * @param count Number of elements to process
+     * @param filter Smoothing coefficient
+     */
     private fun firFilter(
         band: FloatArray,
         start: Int,

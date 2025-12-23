@@ -1,28 +1,34 @@
 package dev.yidafu.terrain.ext
 
-import dev.yidafu.terrain.assert
 import dev.yidafu.terrain.core.Vertex
 import kotlin.jvm.JvmName
-import kotlin.math.floor
-import kotlin.math.sqrt
 
+/**
+ * Converts a FloatArray to UByteArray by normalizing values to 0-255 range.
+ *
+ * The conversion maps the input range [min, max] to [0, 255].
+ *
+ * @return UByteArray with normalized values in range 0-255
+ */
 @OptIn(ExperimentalUnsignedTypes::class)
 @JvmName("FloatArray_toUByteArray")
 inline fun FloatArray.toUByteArray(): UByteArray {
     val maxValue = this.max()
     val minValue = this.min()
     val range = maxValue - minValue
-    val uBytes =
-        map {
-            floor(((it - minValue) / range * 255).toDouble()).toInt().toUByte()
-        }.toUByteArray()
-    ubyteArrayOf(*uBytes)
-    return uBytes
+    return map {
+        ((it - minValue) / range * 255).toInt().toUByte()
+    }.toUByteArray()
 }
 
+/**
+ * Iterates over the FloatArray as a 2D grid.
+ *
+ * @param callback Function called for each grid cell with x, y coordinates and value
+ */
 @JvmName("FloatArray_grid")
 inline fun FloatArray.grid(crossinline callback: (x: Int, y: Int, value: Float) -> Unit) {
-    val size = sqrt(this.size.toDouble()).toInt()
+    val size = width
     for (x in 0..<size) {
         for (z in 0..<size) {
             val value = this[z * size + x]
@@ -31,9 +37,13 @@ inline fun FloatArray.grid(crossinline callback: (x: Int, y: Int, value: Float) 
     }
 }
 
-@JvmName("FloatArray_displayMatrix")
-fun FloatArray.displayMatrix() {
-    val size = sqrt(this.size.toDouble()).toInt()
+/**
+ * Prints the array as a 2D matrix to stdout.
+ * Assumes the array represents a square matrix.
+ */
+@JvmName("FloatArray_printMatrix")
+fun FloatArray.printMatrix() {
+    val size = width
     for (x in 0..<size) {
         for (z in 0..<size) {
             print(this[z * size + x].toString().padStart(8, ' '))
@@ -43,13 +53,7 @@ fun FloatArray.displayMatrix() {
 }
 
 val FloatArray.width: Int
-    get() {
-        val width = sqrt(size.toFloat())
-        assert(width > floor(width)) {
-            "FloatArray must be a square"
-        }
-        return width.toInt()
-    }
+    get() = calculateSquareWidth(size)
 
 @JvmName("FloatArray_setVertex")
 inline fun FloatArray.setVertex(

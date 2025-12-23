@@ -107,19 +107,7 @@ local.*
 
 /*.png
 /*.json
-.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.kotlin-kotlin-stdlib-2.0.20-commonMain-WPEnbA.klib
-.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.kotlin-kotlin-test-2.0.20-annotationsCommonMain-NjL0Sw.klib
-.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.kotlin-kotlin-test-2.0.20-assertionsCommonMain-NjL0Sw.klib
+.kotlin/
 .idea/.gitignore
-.idea/compiler.xml
-.idea/gradle.xml
-.idea/kotlinc.xml
-.idea/ktlint-plugin.xml
-.idea/migrations.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
-.idea/artifacts/terrain_js_1_0_SNAPSHOT.xml
-.idea/artifacts/terrain_jvm_1_0_SNAPSHOT.xml
-.idea/modules/terrain.jvmMain.iml
-bin/main/Main.kt
+.idea/
+CLAUDE.md
